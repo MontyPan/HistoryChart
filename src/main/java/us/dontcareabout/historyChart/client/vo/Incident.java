@@ -13,17 +13,19 @@ import us.dontcareabout.gwt.client.google.sheet.Validator;
  * 	<li>允許沒有結束日期（單指某一年 / 某一天）</li>
  * </ul>
  */
-public final class Incident extends DateRow {
+public final class Incident extends DateRow implements HasPeriod {
 	protected Incident() {}
 
 	public String getName() {
 		return stringField("名稱");
 	}
 
+	@Override
 	public Date getStartDate() {
 		return compoundDate("開始");
 	}
 
+	@Override
 	public Date getEndDate() {
 		return compoundDate("結束");
 	}
