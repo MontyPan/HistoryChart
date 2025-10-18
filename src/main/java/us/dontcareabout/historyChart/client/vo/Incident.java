@@ -4,14 +4,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import us.dontcareabout.gwt.client.google.sheet.SheetDto;
 import us.dontcareabout.gwt.client.google.sheet.Validator;
 
 /**
- * 事件
- * <ul>
- * 	<li>允許沒有開始日期（例：生年不詳）</li>
- * 	<li>允許沒有結束日期（單指某一年 / 某一天）</li>
- * </ul>
+ * 對應 Google Sheet 的「事件」工作表的一筆資料。
+ * <p>
+ * 開始時間（{@link #getStartDate()}）與結束時間（{@link #getEndDate()}）必然有值。
+ * 開始時間是透過 {@link IncidentValidator} 與 {@link SheetDto} 確保；
+ * 如果原始資料沒有給結束時間，則 {@link #getEndDate()} 會回傳開始時間。
  */
 public final class Incident extends DateRow implements HasPeriod {
 	protected Incident() {}
@@ -27,24 +28,22 @@ public final class Incident extends DateRow implements HasPeriod {
 
 	@Override
 	public Date getEndDate() {
-		return compoundDate("結束");
+		Date result = compoundDate("結束");
+		return result == null ? getStartDate() : result;
 	}
 
-	public String getInterval () {
-		return stringField("所在區間");
+	public String getParent () {
+		return stringField("所屬事件");
 	}
 
 	public static class IncidentValidator implements Validator<Incident> {
 		@Override
 		public List<Throwable> validate(Incident entry) {
-			//日期的判斷
-			//但是兩個都缺就是無效資料
-			if (entry.getStartDate() == null && entry.getEndDate() == null) {
-				return Arrays.asList(new Throwable("沒有開始日期也沒有結束日期"));
+			if (entry.getStartDate() == null) {
+				return Arrays.asList(new Throwable("沒有開始日期"));
 			}
 
-			if (entry.getStartDate() != null && entry.getEndDate() != null &&
-					entry.getStartDate().after(entry.getEndDate())) {
+			if (entry.getStartDate().after(entry.getEndDate())) {
 				return Arrays.asList(new Throwable("結束日期大於開始日期"));
 			}
 
