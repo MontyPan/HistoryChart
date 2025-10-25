@@ -11,15 +11,15 @@ import us.dontcareabout.historyChart.client.vo.HasPeriod;
  * 一組安全、不會重疊的 {@link HasPeriod}。
  * 亦即：任意兩個 element 的起訖日期區間都不會重疊（但允許相等）。
  */
-public class PeriodSafeList<T extends HasPeriod> implements HasPeriod {
-	private List<T> list = Lists.newArrayList();
+public class PeriodSafeList implements HasPeriod {
+	private List<HasPeriod> list = Lists.newArrayList();
 	private Date startDate;
 	private Date endDate;
 
 	/**
 	 * 前提假設：傳入 period 的開始時間小於 list 中任一元素的開始時間。
 	 */
-	public boolean accept(T newPeriod) {
+	public boolean accept(HasPeriod newPeriod) {
 		if (list.isEmpty()) {
 			list.add(newPeriod);
 			startDate = newPeriod.getStartDate();
@@ -38,7 +38,7 @@ public class PeriodSafeList<T extends HasPeriod> implements HasPeriod {
 		return false;
 	}
 
-	public List<T> getList() {
+	public List<HasPeriod> getList() {
 		return list;
 	}
 
