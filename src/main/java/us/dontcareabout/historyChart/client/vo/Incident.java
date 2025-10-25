@@ -36,6 +36,10 @@ public final class Incident extends DateRow implements HasPeriod {
 		return stringField("所屬事件");
 	}
 
+	public String getColor () {
+		return stringField("顏色");
+	}
+
 	public static class IncidentValidator implements Validator<Incident> {
 		@Override
 		public List<Throwable> validate(Incident entry) {
