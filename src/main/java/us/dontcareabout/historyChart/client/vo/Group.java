@@ -18,6 +18,6 @@ public final class Group extends Row {
 	}
 
 	public String getIncidentColor () {
-		return stringField("顏色");
+		return stringField("事件顏色");
 	}
 }
