@@ -29,9 +29,11 @@ TODO layout 優化
  */
 public 	class EraLS extends LayerSprite {
 	private final Era era;
+	private final RGB gnColor;
 
-	public EraLS(Era era) {
+	public EraLS(Era era, RGB gnColor) {
 		this.era = era;
+		this.gnColor = gnColor;
 
 		double ly = 0;
 		List<PeriodSafeList> rowList = era.getRowList();
@@ -44,7 +46,7 @@ public 	class EraLS extends LayerSprite {
 		double width = Argument.dayUnit * DateUtil.daysBetween(era.getStartDate(), era.getEndDate());
 
 		if (era.parent != null) {
-			RGB color = new RGB(era.parent.instance.getColor());
+			RGB color = era.parent.instance.getColor().isEmpty() ? gnColor : new RGB(era.parent.instance.getColor());
 			setBgColor(color);
 			setBgStrokeColor(ColorUtil.blackOrWhite(color));
 
@@ -69,10 +71,10 @@ public 	class EraLS extends LayerSprite {
 
 			if (p instanceof Era) {
 				Era childEra = (Era) p;
-				newLS = new EraLS(childEra);
+				newLS = new EraLS(childEra, gnColor);
 			} else {
 				IncidentNode childIN = (IncidentNode) p;
-				newLS = new IncidentLS(childIN);
+				newLS = new IncidentLS(childIN, gnColor);
 			}
 
 			newLS.setLX(Argument.dayUnit * DateUtil.daysBetween(era.getStartDate(), p.getStartDate()));
