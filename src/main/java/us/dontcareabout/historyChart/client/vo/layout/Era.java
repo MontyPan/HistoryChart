@@ -23,19 +23,25 @@ public class Era implements HasPeriod {
 	public Era(List<IncidentNode> list) {
 		parent = null;
 		build(list);
-		decidePeriod(list);
+		List<Date> period = DateUtil.getFirstLast(list);
+		start = period.get(0);
+		end = period.get(1);
 	}
 
 	public Era(IncidentNode parent) {
 		this.parent = parent;
 		build(parent.getChildren());
 
-		//自己也得放下去一起找除起訖時間
-		//這也代表：child 的時間區間大過 parent 也沒關係
-		List<IncidentNode> list = Lists.newArrayList();
-		list.addAll(parent.getChildren());
-		list.add(parent);
-		decidePeriod(list);
+		/*
+		 * 原本的作法是：child 的時間區間如果大過 parent，以 child 為準。
+		 * 但後來發現還是得用 parent 的起訖時間。
+		 * 考慮「Foo 建立 WTF 王國」的情況
+		 * Foo（Incident）會是 WTF（Incident）的 child
+		 * 而 Foo 的出生年勢必比 WTF 的建立時間早
+		 * 也就是說，視覺上 Foo 會有一段是超出 WTF 的範圍才合理
+		 */
+		start = parent.getStartDate();
+		end = parent.getEndDate();
 	}
 
 	public int getRowAmount() {
@@ -54,12 +60,6 @@ public class Era implements HasPeriod {
 	@Override
 	public Date getEndDate() {
 		return end;
-	}
-
-	private void decidePeriod(List<IncidentNode> list) {
-		List<Date> period = DateUtil.getFirstLast(list);
-		start = period.get(0);
-		end = period.get(1);
 	}
 
 	private void build(List<IncidentNode> list) {
