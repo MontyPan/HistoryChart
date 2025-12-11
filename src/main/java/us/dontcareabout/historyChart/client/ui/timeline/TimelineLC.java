@@ -42,6 +42,14 @@ public class TimelineLC extends LayerContainer {
 		addLayer(bg);
 
 		double height = timeTextHeight;
+
+		ArtifactLS artifactLS = new ArtifactLS(DataCenter.artifactList);
+		artifactLS.setLX(Argument.toWidth(start, artifactLS.start));
+		artifactLS.setLY(height);
+		addLayer(artifactLS);
+
+		height += artifactLS.getHeight();
+
 		height = convertGroupNode(GroupNode.DEFAULT, height);
 
 		for (GroupNode gn : DataCenter.groupTree.getRootList()) {
