@@ -12,12 +12,15 @@ import us.dontcareabout.gwt.client.google.sheet.Sheet;
 import us.dontcareabout.gwt.client.google.sheet.SheetDto;
 import us.dontcareabout.gwt.client.google.sheet.SheetDto.Callback;
 import us.dontcareabout.gwt.client.util.TaskSet;
+import us.dontcareabout.historyChart.client.data.event.ArtifactReadyEvent;
+import us.dontcareabout.historyChart.client.data.event.ArtifactReadyEvent.ArtifactReadyHandler;
 import us.dontcareabout.historyChart.client.data.event.GroupReadyEvent;
 import us.dontcareabout.historyChart.client.data.event.GroupReadyEvent.GroupReadyHandler;
 import us.dontcareabout.historyChart.client.data.event.IncidentReadyEvent;
 import us.dontcareabout.historyChart.client.data.event.IncidentReadyEvent.IncidentReadyHandler;
 import us.dontcareabout.historyChart.client.data.event.InitFinishEvent;
 import us.dontcareabout.historyChart.client.data.event.InitFinishEvent.InitFinishHandler;
+import us.dontcareabout.historyChart.client.vo.Artifact;
 import us.dontcareabout.historyChart.client.vo.Group;
 import us.dontcareabout.historyChart.client.vo.HasPeriod.StartDateComparator;
 import us.dontcareabout.historyChart.client.vo.Incident;
@@ -32,6 +35,7 @@ public class DataCenter {
 	//level 1 data
 	public static List<Incident> incidentList;
 	public static List<Group> groupList;
+	public static List<Artifact> artifactList;
 
 	//level 2 data
 	public static Date start;
@@ -46,13 +50,35 @@ public class DataCenter {
 			addGroupReady(e -> ts.check())
 		).addAsyncTask(
 			() -> wantIncident(),
-			addIncidentReady(e ->ts.check())
+			addIncidentReady(e -> ts.check())
+		).addAsyncTask(
+			() -> wantArtifact(),
+			addArtifactReady(e -> ts.check())
 		).addFinalTask(() -> process())
 		.start();
 	}
 
 	public static HandlerRegistration addInitFinish(InitFinishHandler handler) {
 		return eventBus.addHandler(InitFinishEvent.TYPE, handler);
+	}
+
+	public static void wantArtifact() {
+		new SheetDto<Artifact>().key(ApiKey.jsValue())
+				.sheetId(SheetIdDao.priorityValue()).tabName("作品")
+				.fetch(
+			new Callback<Artifact>() {
+				@Override
+				public void onSuccess(Sheet<Artifact> gs) {
+					artifactList = gs.getRows();
+					artifactList.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+					eventBus.fireEvent(new ArtifactReadyEvent());
+				}
+			}
+		);
+	}
+
+	public static HandlerRegistration addArtifactReady(ArtifactReadyHandler handler) {
+		return eventBus.addHandler(ArtifactReadyEvent.TYPE, handler);
 	}
 
 	public static void wantGroup() {
