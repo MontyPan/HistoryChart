@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 public final class Artifact extends DateRow {
 	protected Artifact() {}
 
@@ -21,11 +23,11 @@ public final class Artifact extends DateRow {
 	}
 
 	public List<String> getImgList() {
-		return Arrays.asList(stringField("圖檔").split("\n"));
+		return toList(stringField("圖檔"));
 	}
 
 	public List<String> getRefList() {
-		return Arrays.asList(stringField("參考資料").split("\n"));
+		return toList(stringField("參考資料"));
 	}
 
 	private Date getStartDate() {
@@ -35,5 +37,9 @@ public final class Artifact extends DateRow {
 	private Date getEndDate() {
 		Date result = compoundDate("結束");
 		return result == null ? getStartDate() : result;
+	}
+
+	private static List<String> toList(String string) {
+		return string.isEmpty() ? Lists.newArrayList() : Arrays.asList(string.split("\n"));
 	}
 }
