@@ -29,6 +29,13 @@ public class Argument {
 	/** 時間軸時間字的高度 */
 	public static int timeTextHeight = 26;
 
+	/**
+	 * @return 寬度換算回對應天數
+	 */
+	public static int toDay(int witdh) {
+		return (int)Math.floor(witdh / Argument.dayUnit);
+	}
+
 	public static double toWidth(Date start, Date target) {
 		return DateUtil.daysBetween(start, target) * dayUnit;
 	}
