@@ -30,11 +30,11 @@ public final class Artifact extends DateRow {
 		return toList(stringField("參考資料"));
 	}
 
-	private Date getStartDate() {
+	public Date getStartDate() {
 		return compoundDate("開始");
 	}
 
-	private Date getEndDate() {
+	public Date getEndDate() {
 		Date result = compoundDate("結束");
 		return result == null ? getStartDate() : result;
 	}
