@@ -57,6 +57,12 @@ public class DateUtil {
 		return Arrays.asList(start, end);
 	}
 
+	/**
+	 * @return 以 BC / AD 標示的年份
+	 */
+	public static String toY_bc_ad(Date d) {
+		return Math.abs(year(d)) + (year(d) > 0 ? " AD" : " BC");
+	}
 	public static String toY(Date d) { return "" + year(d); }
 	public static String toYM(Date d) { return format(d, YM_FORMAT); }
 	public static String toYMD(Date d) { return format(d, YMD_FORMAT); }
