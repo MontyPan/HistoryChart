@@ -26,6 +26,15 @@ public class ArtifactLS extends LayerSprite {
 	private List<PeriodSafeList> rowList = Lists.newArrayList();
 
 	public ArtifactLS(List<Artifact> list) {
+		//目前不正式處理 list 是空的狀態
+		//也就是說，當沒有 artifact list 的時候，這個 component 根本不應該存在
+		//而這個責任是由 caller 負責... XD
+		if (list.isEmpty()) {
+			start = null;
+			end = null;
+			return;
+		}
+
 		start = list.get(0).getDate();
 		end = list.get(list.size() - 1).getDate();
 		rowList.add(new PeriodSafeList());

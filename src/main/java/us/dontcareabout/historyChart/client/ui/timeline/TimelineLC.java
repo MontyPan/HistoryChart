@@ -43,12 +43,14 @@ public class TimelineLC extends LayerContainer {
 
 		double height = timeTextHeight;
 
-		ArtifactLS artifactLS = new ArtifactLS(DataCenter.artifactList);
-		artifactLS.setLX(Argument.toWidth(start, artifactLS.start));
-		artifactLS.setLY(height);
-		addLayer(artifactLS);
-
-		height += artifactLS.getHeight();
+		//如果沒有 artifact list，則根本不加 ArtifactLS
+		if (!DataCenter.artifactList.isEmpty()) {
+			ArtifactLS artifactLS = new ArtifactLS(DataCenter.artifactList);
+			artifactLS.setLX(Argument.toWidth(start, artifactLS.start));
+			artifactLS.setLY(height);
+			addLayer(artifactLS);
+			height += artifactLS.getHeight();
+		}
 
 		height = convertGroupNode(GroupNode.DEFAULT, height);
 
@@ -118,6 +120,8 @@ public class TimelineLC extends LayerContainer {
 		List<TextLS> textList = Lists.newArrayList();
 
 		Background(Date start, Date end) {
+			setBgColor(RGB.WHITE);
+
 			int sy = (DateUtil.year(start) / timePeriodAmount - 1) * timePeriodAmount;
 			int ey = (DateUtil.year(end) / timePeriodAmount + 1) * timePeriodAmount;
 
