@@ -135,6 +135,13 @@ public class DataCenter {
 		start = incidentTree.getStartDate();
 		end = incidentTree.getEndDate();
 
+		//start / end 也要考慮作品的時間
+		if (!artifactList.isEmpty()) {
+			Date artifactEnd = artifactList.get(artifactList.size() - 1).getDate();
+			start = (start.after(artifactList.get(0).getDate())) ? artifactList.get(0).getDate() : start;
+			end = (end.before(artifactEnd)) ? artifactEnd : end;
+		}
+
 		for (IncidentNode in : incidentTree.getRootList()) {
 			groupTree.addIncident(in);
 		}
